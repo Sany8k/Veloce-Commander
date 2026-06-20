@@ -1,0 +1,69 @@
+.main-window-root {
+    -fx-background-color: -color-bg-default;
+}
+
+.main-toolbar {
+    -fx-padding: 6 8 6 8;
+    -fx-spacing: 8;
+    -fx-background-color: -color-bg-subtle;
+    -fx-border-color: -color-border-default;
+    -fx-border-width: 0 0 1 0;
+}
+
+.main-toolbar-button {
+    -fx-padding: 5 10 5 10;
+}
+
+.workspace-view {
+    -fx-padding: 8;
+    -fx-background-color: -color-bg-default;
+}
+
+.workspace-view > .split-pane-divider {
+    -fx-padding: 0 1 0 1;
+    -fx-background-color: -color-border-default;
+}
+
+.file-pane {
+    -fx-background-color: -color-bg-subtle;
+    -fx-border-color: -color-border-default;
+    -fx-border-width: 1;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+}
+
+.file-pane-header {
+    -fx-padding: 8 10 8 10;
+    -fx-spacing: 2;
+    -fx-background-color: -color-bg-inset;
+    -fx-border-color: -color-border-muted;
+    -fx-border-width: 0 0 1 0;
+    -fx-background-radius: 6 6 0 0;
+}
+
+.file-pane-header-title-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -color-fg-default;
+}
+
+.file-pane-header-path-label {
+    -fx-font-size: 11px;
+    -fx-text-fill: -color-fg-muted;
+}
+
+.file-pane-placeholder {
+    -fx-alignment: center;
+    -fx-text-fill: -color-fg-muted;
+    -fx-font-size: 13px;
+}
+
+.file-pane-status {
+    -fx-padding: 5 10 5 10;
+    -fx-font-size: 11px;
+    -fx-text-fill: -color-fg-muted;
+    -fx-background-color: -color-bg-inset;
+    -fx-border-color: -color-border-muted;
+    -fx-border-width: 1 0 0 0;
+    -fx-background-radius: 0 0 6 6;
+}
