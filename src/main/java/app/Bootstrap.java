@@ -1,3 +1,5 @@
+package app;
+
 import javafx.application.Application;
 
 public final class Bootstrap {

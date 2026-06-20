@@ -1,9 +1,11 @@
-import atlantafx.base.theme.PrimerDark;
+package app;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import ui.theme.ThemeManager;
 
 public class FileManagerApplication extends Application {
     private static final int DEFAULT_WIDTH = 1100;
@@ -11,7 +13,8 @@ public class FileManagerApplication extends Application {
 
     @Override
     public void start(Stage stage) {
-        Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
+        ThemeManager themeManager = new ThemeManager();
+        themeManager.applyDefaultTheme();
 
         var root = new BorderPane();
         root.setCenter(new Label("Veloce Commander"));

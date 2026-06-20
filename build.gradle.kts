@@ -36,5 +36,5 @@ tasks.test {
 }
 
 application {
-    mainClass.set("Bootstrap")
+    mainClass.set("app.Bootstrap")
 }
