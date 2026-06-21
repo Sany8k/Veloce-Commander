@@ -59,11 +59,17 @@ public class MainWindow {
 
   private ToolBar createToolBar() {
     Button addPaneButton = new Button("+ Pane");
+    Button closePaneButton = new Button("Close Pane");
+    Button openHomeButton = new Button("Open Home");
     addPaneButton.getStyleClass().add("main-toolbar-button");
+    closePaneButton.getStyleClass().add("main-toolbar-button");
+    openHomeButton.getStyleClass().add("main-toolbar-button");
 
-    addPaneButton.setOnAction(event -> workspaceView.addNewPane());
+    addPaneButton.setOnAction(event -> workspaceView.addPane());
+    closePaneButton.setOnAction(event -> workspaceView.closeActivePane());
+    openHomeButton.setOnAction(event -> workspaceView.openUserHomeInActivePane());
 
-    ToolBar toolBar = new ToolBar(addPaneButton);
+    ToolBar toolBar = new ToolBar(addPaneButton, closePaneButton, openHomeButton);
     toolBar.getStyleClass().add("main-toolbar");
     return toolBar;
   }
