@@ -55,10 +55,33 @@ public class WorkspaceViewModel {
   }
 
   public void openDirectoryInActivePane(Path directory) throws DirectoryReadException {
+    Objects.requireNonNull(directory, "directory must not be null");
     PaneId activePaneId = workspaceState.getActivePaneId();
     Objects.requireNonNull(activePaneId, "activePaneId must not be null");
     fileNavigationService.openDirectory(workspaceState, activePaneId, directory);
     rebuildPanes();
+  }
+
+  public void openDirectoryInPane(PaneId paneId, Path directory) throws DirectoryReadException {
+    Objects.requireNonNull(paneId, "paneId must not be null");
+    Objects.requireNonNull(directory, "directory must not be null");
+
+    fileNavigationService.openDirectory(workspaceState, paneId, directory);
+    workspaceService.focusPane(workspaceState, paneId);
+    rebuildPanes();
+  }
+
+  public PaneId getActivePaneId() {
+    PaneId activePaneId = workspaceState.getActivePaneId();
+    return Objects.requireNonNull(activePaneId, "activePaneId must not be null");
+  }
+
+  public FilePaneViewModel getPane(PaneId paneId) {
+    Objects.requireNonNull(paneId, "paneId must not be null");
+    return panes.stream()
+        .filter(pane -> Objects.equals(pane.getId(), paneId))
+        .findFirst()
+        .orElseThrow(() -> new IllegalArgumentException("Pane not found: " + paneId));
   }
 
   private void rebuildPanes() {

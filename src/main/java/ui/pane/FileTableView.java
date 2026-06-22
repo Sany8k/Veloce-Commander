@@ -3,18 +3,52 @@ package ui.pane;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import presentation.FileEntryViewModel;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public class FileTableView extends TableView<FileEntryViewModel> {
 
-  public FileTableView(List<FileEntryViewModel> entries) {
+  public FileTableView(List<FileEntryViewModel> entries, Consumer<FileEntryViewModel> onEntryOpen) {
+    this(entries, onEntryOpen, () -> {
+    });
+  }
+
+  public FileTableView(
+      List<FileEntryViewModel> entries,
+      Consumer<FileEntryViewModel> onEntryOpen,
+      Runnable onTableFocus
+  ) {
     List<FileEntryViewModel> checkedEntries = List.copyOf(
         Objects.requireNonNull(entries, "entries must not be null")
     );
+
+    Consumer<FileEntryViewModel> checkedOnEntryOpen = Objects.requireNonNull(
+        onEntryOpen,
+        "onEntryOpen must not be null"
+    );
+    Runnable checkedOnTableFocus = Objects.requireNonNull(
+        onTableFocus,
+        "onTableFocus must not be null"
+    );
+
+    setRowFactory(table -> {
+      TableRow<FileEntryViewModel> row = new TableRow<>();
+
+      row.setOnMouseClicked(event -> {
+        checkedOnTableFocus.run();
+        event.consume();
+        if (event.getClickCount() == 2 && !row.isEmpty()) {
+          checkedOnEntryOpen.accept(row.getItem());
+        }
+      });
+
+      return row;
+    });
 
     getStyleClass().add("file-table-view");
     setPlaceholder(new Label("No directory loaded"));

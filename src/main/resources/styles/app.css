@@ -71,6 +71,14 @@
     -fx-background-color: -color-bg-default;
 }
 
+.file-table-view .table-row-cell:hover {
+    -fx-background-color: -color-bg-subtle;
+}
+
+.file-table-view .table-row-cell:selected {
+    -fx-background-color: -color-bg-subtle;
+}
+
 .file-pane-status {
     -fx-padding: 5 10 5 10;
     -fx-font-size: 11px;
@@ -84,4 +92,9 @@
 .file-pane-active {
     -fx-border-color: -color-accent-fg;
     -fx-border-width: 2;
+}
+
+.file-pane-active .file-pane-header,
+.file-pane-active .file-pane-status {
+    -fx-border-color: -color-accent-fg;
 }
