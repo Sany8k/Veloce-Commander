@@ -84,6 +84,42 @@ public class WorkspaceViewModel {
         .orElseThrow(() -> new IllegalArgumentException("Pane not found: " + paneId));
   }
 
+  public void goUpInActivePane() throws DirectoryReadException {
+    PaneId activePaneId = getActivePaneId();
+    FilePaneViewModel activePane = getPane(activePaneId);
+
+    Path currentPath = activePane.getCurrentPath();
+    if (currentPath == null) {
+      return;
+    }
+
+    Path parent = currentPath.getParent();
+    if (parent == null) {
+      return;
+    }
+
+    fileNavigationService.openDirectory(workspaceState, activePaneId, parent);
+    rebuildPanes();
+  }
+
+  public Path getActivePaneCurrentPath() {
+    PaneId activePaneId = getActivePaneId();
+    return getPane(activePaneId).getCurrentPath();
+  }
+
+  public void refreshActivePane() throws DirectoryReadException {
+    PaneId activePaneId = getActivePaneId();
+    FilePaneViewModel activePane = getPane(activePaneId);
+
+    Path currentPath = activePane.getCurrentPath();
+    if (currentPath == null) {
+      return;
+    }
+
+    fileNavigationService.openDirectory(workspaceState, activePaneId, currentPath);
+    rebuildPanes();
+  }
+
   private void rebuildPanes() {
     panes.clear();
     workspaceState.getPanes().stream()

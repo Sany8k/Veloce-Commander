@@ -98,3 +98,7 @@
 .file-pane-active .file-pane-status {
     -fx-border-color: -color-accent-fg;
 }
+
+.main-path-field {
+    -fx-pref-width: 420;
+}

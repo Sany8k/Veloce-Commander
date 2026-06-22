@@ -2,6 +2,7 @@ package ui.shell;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -58,18 +59,50 @@ public class MainWindow {
   }
 
   private ToolBar createToolBar() {
+    TextField pathField = new TextField();
+    pathField.setPromptText("Path");
+    workspaceView.setOnActivePathChanged(path -> {
+      if (path == null) {
+        pathField.clear();
+        return;
+      }
+      pathField.setText(path.toString());
+    });
+    Button openPathButton = new Button("Open Path");
+    Button refreshButton = new Button("Refresh");
     Button addPaneButton = new Button("+ Pane");
     Button closePaneButton = new Button("Close Pane");
     Button openHomeButton = new Button("Open Home");
+    Button upButton  = new Button("Up");
+
+    pathField.getStyleClass().add("main-path-field");
+    openPathButton.getStyleClass().add("main-toolbar-button");
+    upButton.getStyleClass().add("main-toolbar-button");
     addPaneButton.getStyleClass().add("main-toolbar-button");
     closePaneButton.getStyleClass().add("main-toolbar-button");
     openHomeButton.getStyleClass().add("main-toolbar-button");
+    refreshButton.getStyleClass().add("main-toolbar-button");
 
+    pathField.setOnAction(event ->
+        workspaceView.openPathInActivePane(pathField.getText()));
+    openPathButton.setOnAction(event ->
+        workspaceView.openPathInActivePane(pathField.getText()));
     addPaneButton.setOnAction(event -> workspaceView.addPane());
     closePaneButton.setOnAction(event -> workspaceView.closeActivePane());
     openHomeButton.setOnAction(event -> workspaceView.openUserHomeInActivePane());
+    upButton.setOnAction(event -> workspaceView.goUpInActivePane());
+    refreshButton.setOnAction(event -> workspaceView.refreshActivePane());
 
-    ToolBar toolBar = new ToolBar(addPaneButton, closePaneButton, openHomeButton);
+    ToolBar toolBar = new ToolBar(
+        addPaneButton,
+        closePaneButton,
+        openHomeButton,
+        upButton,
+        refreshButton,
+        pathField,
+        openPathButton
+    );
+
     toolBar.getStyleClass().add("main-toolbar");
     return toolBar;
   }

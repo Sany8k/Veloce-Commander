@@ -34,7 +34,7 @@ public class FilePaneView extends BorderPane {
         checkedOnEntryOpen,
         checkedOnPaneFocus
     );
-    Label statusLabel = new Label("0 selected");
+    Label statusLabel = new Label(checkedViewModel.getStatusText());
     setTop(header);
     setCenter(fileTableView);
     setBottom(statusLabel);

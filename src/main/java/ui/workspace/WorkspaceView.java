@@ -8,15 +8,18 @@ import presentation.FilePaneViewModel;
 import presentation.WorkspaceViewModel;
 import ui.pane.FilePaneView;
 
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public class WorkspaceView extends SplitPane {
 
   private final WorkspaceViewModel viewModel;
   private final Map<PaneId, FilePaneView> paneViews = new LinkedHashMap<>();
+  private Consumer<Path> onActivePathChanged = path -> {};
 
   public WorkspaceView(WorkspaceViewModel viewModel) {
     this.viewModel = Objects.requireNonNull(viewModel, "Workspace view model must not be null");
@@ -36,6 +39,7 @@ public class WorkspaceView extends SplitPane {
     getItems().add(newPaneView);
     restoreDividerPositions(positions);
     refreshAllPaneStyles();
+    notifyActivePathChanged();
   }
 
   public void closeActivePane() {
@@ -43,6 +47,7 @@ public class WorkspaceView extends SplitPane {
     viewModel.closeActivePane();
     renderAll();
     restoreDividerPositions(positions);
+    notifyActivePathChanged();
   }
 
   public void openUserHomeInActivePane() {
@@ -51,6 +56,7 @@ public class WorkspaceView extends SplitPane {
       PaneId activePaneId = viewModel.getActivePaneId();
       viewModel.openDirectoryInActivePane(userHome);
       refreshPane(activePaneId);
+      notifyActivePathChanged();
     } catch (DirectoryReadException exception) {
       System.err.println(exception.getMessage());
     }
@@ -64,6 +70,66 @@ public class WorkspaceView extends SplitPane {
       paneViews.put(paneViewModel.getId(), filePaneView);
       getItems().add(filePaneView);
     }
+  }
+
+  public void goUpInActivePane() {
+    try {
+      PaneId activePaneId = viewModel.getActivePaneId();
+      viewModel.goUpInActivePane();
+      refreshPane(activePaneId);
+      notifyActivePathChanged();
+    } catch (DirectoryReadException exception) {
+      System.err.println(exception.getMessage());
+    }
+  }
+
+  public void openPathInActivePane(String pathText) {
+    Objects.requireNonNull(pathText, "pathText must not be null");
+
+    String normalizedPathText = pathText.trim();
+    if (normalizedPathText.isEmpty()) {
+      return;
+    }
+
+    Path path;
+    try {
+      path = Path.of(normalizedPathText);
+    } catch (InvalidPathException exception) {
+      System.err.println("Invalid path: " + normalizedPathText);
+      return;
+    }
+
+    try {
+      PaneId activePaneId = viewModel.getActivePaneId();
+      viewModel.openDirectoryInActivePane(path);
+      refreshPane(activePaneId);
+      notifyActivePathChanged();
+    } catch (DirectoryReadException exception) {
+      System.err.println(exception.getMessage());
+    }
+  }
+
+  public void setOnActivePathChanged(Consumer<Path> onActivePathChanged) {
+    this.onActivePathChanged = Objects.requireNonNull(
+        onActivePathChanged,
+        "onActivePathChanged must not be null"
+    );
+  }
+
+  public void refreshActivePane() {
+    try {
+      PaneId activePaneId = viewModel.getActivePaneId();
+      viewModel.refreshActivePane();
+      refreshPane(activePaneId);
+      notifyActivePathChanged();
+    } catch (DirectoryReadException exception) {
+      System.err.println(exception.getMessage());
+    }
+  }
+
+  private void notifyActivePathChanged() {
+    Path currentPath = viewModel.getActivePaneCurrentPath();
+    onActivePathChanged.accept(currentPath);
   }
 
   private FilePaneView createPaneView(FilePaneViewModel paneViewModel) {
@@ -115,6 +181,7 @@ public class WorkspaceView extends SplitPane {
       viewModel.openDirectoryInPane(paneId, entry.path());
       refreshPane(paneId);
       refreshAllPaneStyles();
+      notifyActivePathChanged();
     } catch (DirectoryReadException exception) {
       System.err.println(exception.getMessage());
     }
@@ -124,6 +191,7 @@ public class WorkspaceView extends SplitPane {
     Objects.requireNonNull(paneId, "paneId must not be null");
     viewModel.focusPane(paneId);
     refreshAllPaneStyles();
+    notifyActivePathChanged();
   }
 
   private void restoreDividerPositions(double[] positions) {

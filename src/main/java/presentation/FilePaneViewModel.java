@@ -70,6 +70,21 @@ public class FilePaneViewModel {
     return entries;
   }
 
+  public String getStatusText() {
+    if (currentPath == null) {
+      return "No directory loaded";
+    }
+
+    int entryCount = entries.size();
+    if (entryCount == 0) {
+      return "Directory is empty";
+    }
+    if (entryCount == 1) {
+      return "1 item";
+    }
+    return entryCount + " items";
+  }
+
   public List<FileEntryViewModel> getEntryViewModels() {
     return entries.stream()
         .map(FileEntryViewModel::from)
